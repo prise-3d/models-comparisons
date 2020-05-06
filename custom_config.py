@@ -8,7 +8,7 @@ context_vars = vars()
 logs_folder                             = 'logs'
 backup_folder                           = 'backups'
 learned_zones_folder                    = os.path.join(output_data_folder, learned_zones_folder)
-dataset_folder                          = os.path.join(output_data_folder, 'datasets')
+output_datasets_folder                  = os.path.join(output_data_folder, 'datasets')
 
 ## min_max_custom_folder           = 'custom_norm'
 ## correlation_indices_folder      = 'corr_indices'

@@ -244,11 +244,11 @@ def generate_data_model(_scenes_list, _filename, _interval, _choice, _feature, _
             f.close()
 
 
-    if not os.path.exists(cfg.dataset_folder):
-        os.makedirs(cfg.dataset_folder)
+    if not os.path.exists(cfg.output_datasets_folder):
+        os.makedirs(cfg.output_datasets_folder)
 
-    output_train_filename = os.path.join(cfg.dataset_folder, _filename + ".train")
-    output_test_filename = os.path.join(cfg.dataset_folder, _filename + ".test")
+    output_train_filename = os.path.join(cfg.output_datasets_folder, _filename + ".train")
+    output_test_filename = os.path.join(cfg.output_datasets_folder, _filename + ".test")
 
     train_file = open(output_train_filename, 'w')
     test_file = open(output_test_filename, 'w')
