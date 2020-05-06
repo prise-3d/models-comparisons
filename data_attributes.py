@@ -27,7 +27,7 @@ def get_image_features(data_type, block):
     """
     Method which returns the data type expected
     """
-
+    
     if 'filters_statistics' in data_type:
 
         img_width, img_height = 200, 200

@@ -46,22 +46,29 @@ def main():
 
     parser = argparse.ArgumentParser(description="Read and compute entropy data file")
 
-    parser.add_argument('--model', type=str, help='entropy file data with estimated threshold to read and compute')
+    parser.add_argument('--model', type=str, help='model file')
     parser.add_argument('--method', type=str, help='method name to used', choices=cfg.features_choices_labels, default=cfg.features_choices_labels[0])
+    parser.add_argument('--interval', type=str, help='Interval value to keep from svd', default='"0, 200"')
     parser.add_argument('--kind', type=str, help='Kind of normalization level wished', choices=cfg.normalization_choices)
     parser.add_argument('--imnorm', type=int, help="specify if image is normalized before computing something", default=0, choices=[0, 1])
     parser.add_argument('--scene', type=str, help='Scene index to use', choices=cfg.scenes_indices)
     parser.add_argument('--save', type=str, help='filename where to save input data')
+    parser.add_argument('--label', type=str, help='label to use when saving thresholds')
 
     args = parser.parse_args()
 
     p_model    = args.model
     p_method   = args.method
-    p_n_stop   = args.n_stop
+    p_interval = list(map(int, args.interval.split(',')))
+    #p_n_stop   = args.n_stop
     p_imnorm   = args.imnorm
     p_scene    = args.scene
     p_mode     = args.kind
     p_save     = args.save
+    p_label    = args.label
+
+    p_n_stop = 1
+    begin, end = p_interval
 
     # 1. get scene name
     scenes_list = cfg.scenes_names
@@ -130,24 +137,17 @@ def main():
                     block = np.array(block) / 255.
                 
                 # check if prediction is possible
-                data = np.array(get_image_features(block, p_method))
-
-                # TODO : improve this part
-                # if p_mode == 'svdne':
-
-                #     # getting max and min information from min_max_filename
-                #     with open(data_min_max_filename, 'r') as f:
-                #         min_val = float(f.readline())
-                #         max_val = float(f.readline())
-
-                #     data = utils.normalize_arr_with_range(data, min_val, max_val)
+                data = np.array(get_image_features(p_method, np.array(block)))
 
                 if p_mode == 'svdn':
                     data = utils.normalize_arr_with_range(data)
 
-                data = np.expand_dims(data, axis=0)
+                data = data[begin:end]
+
+                #data = np.expand_dims(data, axis=0)
+                #print(data.shape)
                 
-                prob = model.predict(data)[0]
+                prob = model.predict(np.array(data).reshape(1, -1))[0]
                 #print(index, ':', image_indices[img_i], '=>', prob)
 
                 if prob < 0.5:
@@ -170,6 +170,15 @@ def main():
             estimated_thresholds[i] = image_indices[-1]
 
     # 6. save estimated thresholds into specific file
+    print(estimated_thresholds)
+    print(p_save)
+    if p_save is not None:
+        with open(p_save, 'a') as f:
+            f.write(p_label + ';')
+
+            for t in estimated_thresholds:
+                f.write(str(t) + ';')
+            f.write('\n')
     
 
 if __name__== "__main__":

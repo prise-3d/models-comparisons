@@ -29,9 +29,14 @@ def display_thresholds_comparisons(scene, thresholds, zones_learned, y_lim):
     plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
     
     # display each thresholds data from file comparisons
-    for i in thresholds:
+    for index, i in enumerate(thresholds):
+        
         data = thresholds[i]
-        plt.plot(data, label=i)
+
+        if index == 0:
+            plt.plot(data, lw=3, label=i, color='tab:red')
+        else:
+            plt.plot(data, label=i)
     
     plt.xticks(zones_indices)
     
