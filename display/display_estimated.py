@@ -20,13 +20,13 @@ scenes_list    = cfg.scenes_names
 zones_indices  = cfg.zones_indices
 
 
-def display_thresholds_comparisons(scene, thresholds, zones_learned, y_lim):
+def display_thresholds_comparisons(scene, thresholds_file, thresholds, zones_learned, y_lim):
     
     colors = ['C0', 'C1', 'C2', 'C3']
     
     plt.figure(figsize=(25, 20))
-    plt.rc('xtick', labelsize=16)    # fontsize of the tick labels
-    plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
+    plt.rc('xtick', labelsize=22)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=22)    # fontsize of the tick labels
     
     # display each thresholds data from file comparisons
     for index, i in enumerate(thresholds):
@@ -34,9 +34,9 @@ def display_thresholds_comparisons(scene, thresholds, zones_learned, y_lim):
         data = thresholds[i]
 
         if index == 0:
-            plt.plot(data, lw=3, label=i, color='tab:red')
+            plt.plot(data, lw=6, label=i, color='tab:red')
         else:
-            plt.plot(data, label=i)
+            plt.plot(data, lw=3, label=i)
     
     plt.xticks(zones_indices)
     
@@ -45,19 +45,21 @@ def display_thresholds_comparisons(scene, thresholds, zones_learned, y_lim):
         for i in cfg.zones_indices:
             if i in zones_learned:
                 
-                plt.plot([i, i], [y_lim[0], y_lim[1]], '--', color='grey', alpha=0.3)
-                plt.gca().get_xticklabels()[i].set_color('gray')
+                plt.plot([i, i], [y_lim[0], y_lim[1]], '--', color='black', alpha=0.5)
+                plt.gca().get_xticklabels()[i].set_color('black')
             else:
-                plt.plot([i, i], [y_lim[0], y_lim[1]], '-.', color='red', alpha=0.3)
+                plt.plot([i, i], [y_lim[0], y_lim[1]], '-.', color='red', alpha=0.5)
                 plt.gca().get_xticklabels()[i].set_color('red')
 
 
-    plt.title('Comparisons of estimated thresholds for ' + scene, fontsize=22)
-    plt.legend(fontsize=20)
+    plt.title('Comparisons of estimated thresholds for ' + scene, fontsize=30)
+    plt.legend(fontsize=26)
+    plt.xlabel('Image zone indices', fontsize=28)
+    plt.ylabel('Number of samples', fontsize=28)
+    #plt.tick_params(labelsize=24)
     plt.ylim(y_lim[0], y_lim[1])
 
-
-    plt.show()
+    plt.savefig(thresholds_file, transparent=True)
 
 def main():
 
@@ -139,7 +141,7 @@ def main():
                 if data[0] == scene:
                     zones_learned = [ int(d) for d in data[1:] ]
 
-    display_thresholds_comparisons(scene, estimated_thresholds, zones_learned, y_lim)
+    display_thresholds_comparisons(scene, p_thresholds, estimated_thresholds, zones_learned, y_lim)
 
 if __name__== "__main__":
     main()

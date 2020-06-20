@@ -6,6 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.feature_selection import RFECV
 import sklearn.svm as svm
+from skrvm import RVC
 
 
 def _get_best_model(X_train, y_train):
@@ -24,9 +25,31 @@ def _get_best_model(X_train, y_train):
 
     return model
 
+def _get_best_model_rvm(X_train, y_train):
+
+    #Cs = [0.001, 0.01, 0.1, 1, 10, 100]
+    #Cs = [1, 2, 4, 8, 16, 32]
+    gammas = [0.001, 0.01, 0.1, 1, 10, 100]
+    #param_grid = {'kernel':['rbf'], 'C': Cs, 'gamma' : gammas}
+    param_grid = {'kernel':['rbf'], 'gamma' : gammas}
+
+    rvc = RVC()
+    clf = GridSearchCV(rvc, param_grid, scoring='accuracy', verbose=2)
+    #cv=10, scoring='accuracy', verbose=2)
+
+    clf.fit(X_train, y_train)
+
+    model = clf.best_estimator_
+
+    return model
+
 def svm_model(X_train, y_train):
 
     return _get_best_model(X_train, y_train)
+
+def rvm_model(X_train, y_train):
+
+    return _get_best_model_rvm(X_train, y_train)
 
 
 def ensemble_model(X_train, y_train):
@@ -70,6 +93,9 @@ def get_trained_model(choice, X_train, y_train):
 
     if choice == 'svm_model':
         return svm_model(X_train, y_train)
+
+    if choice == 'rvm_model':
+        return rvm_model(X_train, y_train)
 
     if choice == 'ensemble_model':
         return ensemble_model(X_train, y_train)

@@ -18,7 +18,7 @@ from data_attributes import get_image_features
 
 
 # getting configuration information
-learned_folder          = cfg.learned_zones_folder
+learned_folder          = cfg.output_zones_learned
 min_max_filename        = cfg.min_max_filename_extension
 
 # define all scenes variables
@@ -146,17 +146,17 @@ def generate_data_model(_scenes_list, _filename, _interval, _choice, _feature, _
     load_learn_data = None
     
     if _save_learn is not None:
-        if not os.path.exists(cfg.learned_zones_folder):
-            os.makedirs(cfg.learned_zones_folder)
+        if not os.path.exists(cfg.output_zones_learned):
+            os.makedirs(cfg.output_zones_learned)
 
-        save_learn_file_path = os.path.join(cfg.learned_zones_folder, _save_learn)
+        save_learn_file_path = os.path.join(cfg.output_zones_learned, _save_learn)
         save_learn_file = open(save_learn_file_path, 'w')
 
     if _load_learn is not None:
-        if not os.path.exists(cfg.learned_zones_folder):
-            os.makedirs(cfg.learned_zones_folder)
+        if not os.path.exists(cfg.output_zones_learned):
+            os.makedirs(cfg.output_zones_learned)
 
-        load_learn_file_path = os.path.join(cfg.learned_zones_folder, _load_learn)
+        load_learn_file_path = os.path.join(cfg.output_zones_learned, _load_learn)
         with open(load_learn_file_path, 'r') as f:
             lines = f.readlines()
 
@@ -244,11 +244,11 @@ def generate_data_model(_scenes_list, _filename, _interval, _choice, _feature, _
             f.close()
 
 
-    if not os.path.exists(cfg.output_datasets_folder):
-        os.makedirs(cfg.output_datasets_folder)
+    if not os.path.exists(cfg.output_datasets):
+        os.makedirs(cfg.output_datasets)
 
-    output_train_filename = os.path.join(cfg.output_datasets_folder, _filename + ".train")
-    output_test_filename = os.path.join(cfg.output_datasets_folder, _filename + ".test")
+    output_train_filename = os.path.join(cfg.output_datasets, _filename + ".train")
+    output_test_filename = os.path.join(cfg.output_datasets, _filename + ".test")
 
     train_file = open(output_train_filename, 'w')
     test_file = open(output_test_filename, 'w')
