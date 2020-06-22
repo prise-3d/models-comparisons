@@ -127,7 +127,7 @@ def generate_data_feature(path, output, human_thresholds, data_type, mode):
                     data = utils.normalize_arr_with_range(data, min_val, max_val)
 
                 if mode == 'svdn':
-                    data = utils.normalize_arr(data)
+                    data = utils.normalize_arr_with_range(data)
 
                 # save min and max found from dataset in order to normalize data using whole data known
                 if mode == 'svd':
