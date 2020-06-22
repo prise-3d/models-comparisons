@@ -156,7 +156,7 @@ def main():
     if not os.path.exists(cfg.output_models):
         os.makedirs(cfg.output_models)
 
-    joblib.dump(model, os.path.join(cfg.output_models, + p_output + '.joblib'))
+    joblib.dump(model, os.path.join(cfg.output_models, p_output + '.joblib'))
 
     ##################
     # 6. Save model perf into csv
