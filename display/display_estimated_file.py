@@ -38,7 +38,7 @@ def display_thresholds_comparisons(scene, thresholds_file, thresholds, zones_lea
         else:
             plt.plot(data, lw=3, label=i)
     
-    plt.xticks(zones_indices)
+    plt.xticks(zones_indices, label=[ str(i) for i in (zones_indices + 1) ])
     
     if zones_learned:
 
