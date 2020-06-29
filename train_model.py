@@ -34,7 +34,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Train SKLearn model and save it into .joblib file")
 
-    parser.add_argument('--data', type=str, help='dataset filename prefiloc (without .train and .test)')
+    parser.add_argument('--data', type=str, help='dataset file prefix (without .train and .test)')
     parser.add_argument('--output', type=str, help='output file name desired for model (without .joblib extension)')
     parser.add_argument('--choice', type=str, help='model choice from list of choices', choices=models_list)
 
