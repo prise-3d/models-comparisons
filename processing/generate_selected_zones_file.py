@@ -40,14 +40,14 @@ def main():
 
     parser = argparse.ArgumentParser(description="Read and compute entropy data file (using diff)")
 
-    parser.add_argument('--folder', type=str, help='dataset scene folder', required=True)
+    parser.add_argument('--dataset', type=str, help='dataset scene folder', required=True)
     parser.add_argument('--n_zones', type=int, help='number of zones used in train', default=10)
     parser.add_argument('--output', type=str, help='file with specific training zone', required=True)
     parser.add_argument('--thresholds', type=str, help='file with specific thresholds (using only scene from this file', default='')
 
     args = parser.parse_args()
 
-    p_folder       = args.folder
+    p_folder       = args.dataset
     p_n_zones      = args.n_zones
     p_output       = args.output
     p_thresholds   = args.thresholds

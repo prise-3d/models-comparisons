@@ -13,7 +13,7 @@ import sklearn.svm as svm
 from sklearn.utils import shuffle
 #from sklearn.externals import joblib
 import joblib
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.model_selection import cross_val_score
 
 # modules and config imports
@@ -34,7 +34,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Train SKLearn model and save it into .joblib file")
 
-    parser.add_argument('--data', type=str, help='dataset filename prefiloc (without .train and .test)')
+    parser.add_argument('--data', type=str, help='dataset file prefix (without .train and .test)')
     parser.add_argument('--output', type=str, help='output file name desired for model (without .joblib extension)')
     parser.add_argument('--choice', type=str, help='model choice from list of choices', choices=models_list)
 
@@ -112,42 +112,72 @@ def main():
         x_dataset_test = x_dataset_test[0:total_validation_size]
         y_dataset_test = y_dataset_test[0:total_validation_size]
 
-    X_test, X_val, y_test, y_val = train_test_split(x_dataset_test, y_dataset_test, test_size=0.2, random_state=1)
+    X_test, X_val, y_test, y_val = train_test_split(x_dataset_test, y_dataset_test, test_size=0.3, random_state=1)
 
+    y_train_model = model.predict(x_dataset_train)
     y_test_model = model.predict(X_test)
     y_val_model = model.predict(X_val)
 
+    train_accuracy = accuracy_score(y_dataset_train, y_train_model)
     val_accuracy = accuracy_score(y_val, y_val_model)
     test_accuracy = accuracy_score(y_test, y_test_model)
 
-    print('Train dataset 1 ', np.any(y_test_model == 1))
-    print('Train dataset 0 ', np.any(y_test_model == 0))
+    train_auc = roc_auc_score(y_dataset_train, y_train_model)
+    val_auc = roc_auc_score(y_val, y_val_model)
+    test_auc = roc_auc_score(y_test, y_test_model)
 
-    print('Val dataset 1 ', np.any(y_val_model == 1))
-    print('Val dataset 0 ', np.any(y_val_model == 0))
+    # print('Train dataset 1 ', np.any(y_test_model == 1))
+    # print('Train dataset 0 ', np.any(y_test_model == 0))
 
-    val_f1 = f1_score(y_val, y_val_model)
-    test_f1 = f1_score(y_test, y_test_model)
+    # print('Val dataset 1 ', np.any(y_val_model == 1))
+    # print('Val dataset 0 ', np.any(y_val_model == 0))
+
+    # val_f1 = f1_score(y_val, y_val_model)
+    # test_f1 = f1_score(y_test, y_test_model)
 
     ###################
     # 5. Output : Print and write all information in csv
     ###################
 
+    print("Train dataset size ", len(y_train_model))
+    print("Train: ", train_accuracy)
+
     print("Validation dataset size ", val_set_size)
     print("Validation: ", val_accuracy)
-    print("Validation F1: ", val_f1)
+
     print("Test dataset size ", test_set_size)
     print("Test: ", test_accuracy)
-    print("Test F1: ", test_f1)
+
 
     ##################
     # 6. Save model : create path if not exists
     ##################
 
-    if not os.path.exists(saved_models_folder):
-        os.makedirs(saved_models_folder)
+    if not os.path.exists(cfg.output_models):
+        os.makedirs(cfg.output_models)
 
-    joblib.dump(model, output_model_folder + '/' + p_output + '.joblib')
+    joblib.dump(model, os.path.join(cfg.output_models, p_output + '.joblib'))
+
+    ##################
+    # 6. Save model perf into csv
+    ##################
+
+    if not os.path.exists(cfg.output_results_folder):
+        os.makedirs(cfg.output_results_folder)
+
+    results_filepath = os.path.join(cfg.output_results_folder, 'results.csv')
+
+    # write header if necessary
+    if not os.path.exists(results_filepath):
+        with open(results_filepath, 'w') as f:
+            f.write('name;train_acc;val_acc;test_acc;train_auc;val_auc;test_auc;\n')
+            
+    # add information into file
+    with open(results_filepath, 'a') as f:
+        line = p_output + ';' + str(train_accuracy) + ';' + str(val_accuracy) \
+                        + ';' + str(test_accuracy) + ';' + str(train_auc) \
+                        + ';' + str(val_auc) + ';' + str(test_auc) + '\n'
+        f.write(line)
 
 if __name__== "__main__":
     main()
