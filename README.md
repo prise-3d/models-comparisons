@@ -85,3 +85,10 @@ python simulation/estimate_thresholds_file.py --model data/saved_models/modelv1.
 python display/display_estimated_file.py --simulation filename.csv --learned_zones --data/learned_zones/file --scene /path/to/scene --thresholds file.csv
 ```
 
+## Contributors
+
+* [jbuisine](https://github.com/jbuisine)
+
+## License
+
+[MIT](LICENSE)
