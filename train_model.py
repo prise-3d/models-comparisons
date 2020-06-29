@@ -112,7 +112,7 @@ def main():
         x_dataset_test = x_dataset_test[0:total_validation_size]
         y_dataset_test = y_dataset_test[0:total_validation_size]
 
-    X_test, X_val, y_test, y_val = train_test_split(x_dataset_test, y_dataset_test, test_size=0.2, random_state=1)
+    X_test, X_val, y_test, y_val = train_test_split(x_dataset_test, y_dataset_test, test_size=0.3, random_state=1)
 
     y_train_model = model.predict(x_dataset_train)
     y_test_model = model.predict(X_test)
@@ -170,13 +170,13 @@ def main():
     # write header if necessary
     if not os.path.exists(results_filepath):
         with open(results_filepath, 'w') as f:
-            f.write('name;train_acc;train_auc;val_acc;val_auc;test_acc;test_auc;\n')
+            f.write('name;train_acc;val_acc;test_acc;train_auc;val_auc;test_auc;\n')
             
     # add information into file
     with open(results_filepath, 'a') as f:
-        line = p_output + ';' + str(train_accuracy) + ';' + str(train_auc) \
-                        + ';' + str(val_accuracy) + ';' + str(val_auc) \
-                        + ';' + str(test_accuracy) + ';' + str(test_auc) + '\n'
+        line = p_output + ';' + str(train_accuracy) + ';' + str(val_accuracy) \
+                        + ';' + str(test_accuracy) + ';' + str(train_auc) \
+                        + ';' + str(val_auc) + ';' + str(test_auc) + '\n'
         f.write(line)
 
 if __name__== "__main__":
