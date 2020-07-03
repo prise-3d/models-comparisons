@@ -90,6 +90,49 @@ def get_image_features(data_type, block):
         
         data = np.array(data)
 
+    if 'Constantin2016' in data_type:
+
+        img_width, img_height = 200, 200
+
+        lab_img = transform.get_LAB_L(block)
+        arr = np.array(lab_img)
+
+        stats = []
+
+        kernel = np.ones((3,3),np.float32)/9
+        arr = cv2.filter2D(arr,-1,kernel)
+
+        kernel = np.ones((5,5),np.float32)/25
+        arr = cv2.filter2D(arr,-1,kernel)
+
+        arr = cv2.GaussianBlur(arr, (3, 3), 0.5)
+
+        arr = cv2.GaussianBlur(arr, (3, 3), 1)
+
+        arr = cv2.GaussianBlur(arr, (3, 3), 1.5)
+
+        arr = cv2.GaussianBlur(arr, (5, 5), 0.5)
+
+        arr = cv2.GaussianBlur(arr, (5, 5), 1)
+
+        arr = cv2.GaussianBlur(arr, (5, 5), 1.5)
+
+        arr = medfilt2d(arr, [3, 3])
+
+        arr = medfilt2d(arr, [5, 5])
+
+        arr = wiener(arr, [3, 3])
+
+        arr = wiener(arr, [5, 5])
+
+        wave = w2d(arr, 'db1', 2)
+        # print(np.min(wave), ' - ', np.max(wave), ' - ', np.mean(wave))
+        wave = pywt.threshold(wave, 2, mode='soft')
+        output = np.array(wave, 'float32')
+        
+        data = np.array(output.flatten())
+
+
     if 'lab' in data_type:
 
         data = transform.get_LAB_L_SVD_s(block)
@@ -98,15 +141,15 @@ def get_image_features(data_type, block):
 
 
 def w2d(arr, mode='haar', level=1):
-    #convert to float   
+    # convert to float   
     imArray = arr
     np.divide(imArray, 255)
 
     # compute coefficients 
-    coeffs=pywt.wavedec2(imArray, mode, level=level)
+    coeffs = pywt.wavedec2(imArray, mode, level=level)
 
-    #Process Coefficients
-    coeffs_H=list(coeffs)  
+    # Process Coefficients
+    coeffs_H = list(coeffs)  
     coeffs_H[0] *= 0
 
     # reconstruction
