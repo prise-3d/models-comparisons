@@ -131,7 +131,7 @@ def generate_data_model(_filename, _data_path, _interval, _choice, _feature, _th
     # get zone indices
     zones_indices = np.arange(16)
 
-    for folder_scene in _learned_zones:
+    for folder_scene in _thresholds:
 
         # get train zones
         train_zones = _learned_zones[folder_scene]
