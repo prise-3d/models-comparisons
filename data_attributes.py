@@ -96,7 +96,7 @@ def get_image_features(data_type, block):
 
         lab_img = transform.get_LAB_L(block)
         arr = np.array(lab_img)
-
+    
         stats = []
 
         kernel = np.ones((3,3),np.float32)/9
@@ -144,7 +144,7 @@ def get_image_features(data_type, block):
 def w2d(arr, mode):
     # convert to float   
     imArray = arr
-    np.divide(imArray, 255)
+    np.divide(imArray, 100) # because of lightness channel use of 100
 
     # compute coefficients 
     # same to: LL (LH, HL, HH)
@@ -162,8 +162,8 @@ def w2d(arr, mode):
 
     # reconstruction
     imArray_H = pywt.idwt2((cA, (cH, cV, cD)), mode)
-    imArray_H *= 255
-    imArray_H = np.uint8(imArray_H)
+    imArray_H *= 100 # because of lightness channel use of 100
+    imArray_H = np.array(imArray_H)
 
     return imArray_H
 
