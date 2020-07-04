@@ -153,9 +153,12 @@ def w2d(arr, mode):
 
     # reduce noise from the others cofficients
     # LH, HL and HH
-    cH = pywt.threshold(cH, 2, mode='soft')
-    cV = pywt.threshold(cV, 2, mode='soft')
-    cD = pywt.threshold(cD, 2, mode='soft')
+    # ----
+    # cannot use specific method to predict thresholds...
+    # use of np.percentile(XX, 5) => remove data under 5 first percentile
+    cH = pywt.threshold(cH, np.percentile(cH, 5), mode='soft')
+    cV = pywt.threshold(cV, np.percentile(cV, 5), mode='soft')
+    cD = pywt.threshold(cD, np.percentile(cD, 5), mode='soft')
 
     # reconstruction
     imArray_H = pywt.idwt2((cA, (cH, cV, cD)), mode)
