@@ -125,12 +125,13 @@ def get_image_features(data_type, block):
 
         arr = wiener(arr, [5, 5])
 
-        wave = w2d(arr, 'db1', 2)
-        # print(np.min(wave), ' - ', np.max(wave), ' - ', np.mean(wave))
-        wave = pywt.threshold(wave, 2, mode='soft')
+        wave = w2d(arr, 'db1')
         output = np.array(wave, 'float32')
+
+        # compute abs difference between the two images
+        data = np.abs(np.array(lab_img) - output)
         
-        data = np.array(output.flatten())
+        data = np.array(data.flatten())
 
 
     if 'lab' in data_type:
@@ -140,20 +141,24 @@ def get_image_features(data_type, block):
     return data
 
 
-def w2d(arr, mode='haar', level=1):
+def w2d(arr, mode):
     # convert to float   
     imArray = arr
     np.divide(imArray, 255)
 
     # compute coefficients 
-    coeffs = pywt.wavedec2(imArray, mode, level=level)
+    # same to: LL (LH, HL, HH)
+    cA, (cH, cV, cD) = pywt.dwt2(imArray, mode)
+    cA *= 0 # remove low-low sub-bands data
 
-    # Process Coefficients
-    coeffs_H = list(coeffs)  
-    coeffs_H[0] *= 0
+    # reduce noise from the others cofficients
+    # LH, HL and HH
+    cH = pywt.threshold(cH, 2, mode='soft')
+    cV = pywt.threshold(cV, 2, mode='soft')
+    cD = pywt.threshold(cD, 2, mode='soft')
 
     # reconstruction
-    imArray_H = pywt.waverec2(coeffs_H, mode)
+    imArray_H = pywt.idwt2((cA, (cH, cV, cD)), mode)
     imArray_H *= 255
     imArray_H = np.uint8(imArray_H)
 
