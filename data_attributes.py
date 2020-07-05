@@ -4,7 +4,7 @@ import sys
 
 # image transform imports
 from PIL import Image
-from skimage import color
+from skimage import color, restoration
 from sklearn.decomposition import FastICA
 from sklearn.decomposition import IncrementalPCA
 from sklearn.decomposition import TruncatedSVD
@@ -144,26 +144,48 @@ def get_image_features(data_type, block):
 def w2d(arr, mode):
     # convert to float   
     imArray = arr
-    np.divide(imArray, 100) # because of lightness channel use of 100
+    # np.divide(imArray, 100) # because of lightness channel, use of 100
 
     # compute coefficients 
     # same to: LL (LH, HL, HH)
-    cA, (cH, cV, cD) = pywt.dwt2(imArray, mode)
-    cA *= 0 # remove low-low sub-bands data
+    # cA, (cH, cV, cD) = pywt.dwt2(imArray, mode)
+    # cA *= 0 # remove low-low sub-bands data
 
     # reduce noise from the others cofficients
     # LH, HL and HH
     # ----
     # cannot use specific method to predict thresholds...
     # use of np.percentile(XX, 5) => remove data under 5 first percentile
-    cH = pywt.threshold(cH, np.percentile(cH, 5), mode='soft')
-    cV = pywt.threshold(cV, np.percentile(cV, 5), mode='soft')
-    cD = pywt.threshold(cD, np.percentile(cD, 5), mode='soft')
+    # cH = pywt.threshold(cH, np.percentile(cH, 5), mode='soft')
+    # cV = pywt.threshold(cV, np.percentile(cV, 5), mode='soft')
+    # cD = pywt.threshold(cD, np.percentile(cD, 5), mode='soft')
 
     # reconstruction
-    imArray_H = pywt.idwt2((cA, (cH, cV, cD)), mode)
-    imArray_H *= 100 # because of lightness channel use of 100
-    imArray_H = np.array(imArray_H)
+    # imArray_H = pywt.idwt2((cA, (cH, cV, cD)), mode)
+    # print(np.min(imArray_H), np.max(imArray_H), np.mean(imArray_H))
+    # imArray_H *= 100 # because of lightness channel, use of 100
+    # imArray_H = np.array(imArray_H)
+
+    # coeffs = pywt.wavedec2(imArray, mode, level=2)
+
+    # #Process Coefficients
+    # coeffs_H=list(coeffs)  
+    # coeffs_H[0] *= 0;  
+
+    # # reconstruction
+    # imArray_H=pywt.waverec2(coeffs_H, mode)
+    # print(np.min(imArray_H), np.max(imArray_H), np.mean(imArray_H))
+
+    # using skimage
+    sigma = restoration.estimate_sigma(imArray, average_sigmas=True, multichannel=False)
+    imArray_H = restoration.denoise_wavelet(imArray, sigma=sigma, wavelet='db1', mode='soft', 
+        wavelet_levels=2, 
+        multichannel=False, 
+        convert2ycbcr=False, 
+        method='VisuShrink', 
+        rescale_sigma=True)
+
+    # imArray_H *= 100
 
     return imArray_H
 
