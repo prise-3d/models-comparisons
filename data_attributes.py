@@ -133,6 +133,9 @@ def get_image_features(data_type, block):
         
         data = np.array(data.flatten())
 
+        # if normalization by L channel is required
+        if 'norm' in data_type:
+            data /= 100.
 
     if 'lab' in data_type:
 
