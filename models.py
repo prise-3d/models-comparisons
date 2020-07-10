@@ -8,6 +8,8 @@ from sklearn.feature_selection import RFECV
 import sklearn.svm as svm
 from skrvm import RVC
 
+from thundersvm import SVC
+
 
 def _get_best_model(X_train, y_train):
 
@@ -43,6 +45,10 @@ def _get_best_model_rvm(X_train, y_train):
     model = clf.best_estimator_
 
     return model
+
+def gpu_svm_model(X_train, y_train):
+    clf = SVC()
+    return clf.fit(X_train, y_train)
 
 def svm_model(X_train, y_train):
 
@@ -94,6 +100,9 @@ def get_trained_model(choice, X_train, y_train):
 
     if choice == 'svm_model':
         return svm_model(X_train, y_train)
+
+    if choice == 'gpu_svm_model':
+        return gpu_svm_model(X_train, y_train)
 
     if choice == 'rvm_model':
         return rvm_model(X_train, y_train)
