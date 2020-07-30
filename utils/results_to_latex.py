@@ -25,6 +25,13 @@ def main():
 
         for index, v in enumerate(data):
             
+            v = v.replace('_', '\_')
+
+            try:
+                v = "%.4f" % float(v)
+            except ValueError:
+                pass
+                
             if index != len(data) - 1:
                 output_file.write(v + ' & ')
             else:
