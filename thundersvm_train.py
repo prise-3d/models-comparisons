@@ -6,11 +6,15 @@ import sys, os, argparse
 # models imports
 from sklearn.utils import shuffle
 from thundersvm import SVC
+from sklearn.metrics.scorer import accuracy_scorer
+from sklearn.model_selection import GridSearchCV
 
 # modules and config imports
 sys.path.insert(0, '') # trick to enable import of main folder module
 
 # variables and parameters
+n_predict = 0
+
 
 def main():
 
@@ -67,10 +71,36 @@ def main():
     print("-------------------------------------------")
     print("Train dataset size: ", final_df_train_size)
 
-    model = SVC()
+
+    x_dataset_train = np.array(x_dataset_train, 'float32')
+    y_dataset_train = np.array(y_dataset_train, 'uint8')
+
+    def my_accuracy_scorer(*args):
+        global n_predict
+        score = accuracy_scorer(*args)
+        print('{0} - Score is {1}'.format(n_predict, score))
+        n_predict += 1
+        return score
+
+    def _get_best_model(X_train, y_train):
+
+        Cs = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+        # Cs = [1, 2, 4, 8, 16, 32]
+        # gammas = [0.001, 0.01]
+        gammas = [0.001, 0.01, 0.1, 1, 5, 10, 100]
+        param_grid = {'kernel':['rbf'], 'C': Cs, 'gamma' : gammas}
+
+        svc = SVC()
+        clf = GridSearchCV(svc, param_grid, cv=10, verbose=1, scoring=my_accuracy_scorer)
+
+        clf.fit(X_train, y_train)
+
+        model = clf.best_estimator_
+
+        return model
 
     print('Start training model using thundersvm...')
-    model.fit(x_dataset_train, y_dataset_train)
+    model = _get_best_model(x_dataset_train, y_dataset_train)
 
 if __name__== "__main__":
     main()
