@@ -7,20 +7,28 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.feature_selection import RFECV
 import sklearn.svm as svm
 from skrvm import RVC
+from sklearn.metrics.scorer import accuracy_scorer
 
-from thundersvm import SVC
 
+n_predict = 0
+
+def my_accuracy_scorer(*args):
+    global n_predict
+    score = accuracy_scorer(*args)
+    print('{0} - Score is {1}'.format(n_predict, score))
+    n_predict += 1
+    return score
 
 def _get_best_model(X_train, y_train):
 
     Cs = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
-    #Cs = [1, 2, 4, 8, 16, 32]
-    #gammas = [0.001, 0.01]
+    # Cs = [1, 2, 4, 8, 16, 32]
+    # gammas = [0.001, 0.01]
     gammas = [0.001, 0.01, 0.1, 1, 5, 10, 100]
     param_grid = {'kernel':['rbf'], 'C': Cs, 'gamma' : gammas}
 
     svc = svm.SVC(probability=True)
-    clf = GridSearchCV(svc, param_grid, cv=10, scoring='accuracy', verbose=2)
+    clf = GridSearchCV(svc, param_grid, cv=10, verbose=1, scoring=my_accuracy_scorer)
 
     clf.fit(X_train, y_train)
 
@@ -46,9 +54,9 @@ def _get_best_model_rvm(X_train, y_train):
 
     return model
 
-def gpu_svm_model(X_train, y_train):
-    clf = SVC()
-    return clf.fit(X_train, y_train)
+# def gpu_svm_model(X_train, y_train):
+#     clf = SVC()
+#     return clf.fit(X_train, y_train)
 
 def svm_model(X_train, y_train):
 
@@ -100,9 +108,6 @@ def get_trained_model(choice, X_train, y_train):
 
     if choice == 'svm_model':
         return svm_model(X_train, y_train)
-
-    if choice == 'gpu_svm_model':
-        return gpu_svm_model(X_train, y_train)
 
     if choice == 'rvm_model':
         return rvm_model(X_train, y_train)
