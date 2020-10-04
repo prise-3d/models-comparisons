@@ -1,1 +1,3 @@
-thundersvm
+pandas
+numpy
+scikit-learn

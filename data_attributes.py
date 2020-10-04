@@ -77,7 +77,7 @@ def get_image_features(data_type, block):
 
         stats.append(get_stats(arr, wiener(arr, [5, 5])))
 
-        wave = w2d(arr, 'db1', 2)
+        wave = w2d(arr, 'db1')
         stats.append(get_stats(arr, np.array(wave, 'float64')))
 
         data = []
