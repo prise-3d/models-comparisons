@@ -26,7 +26,7 @@ def _get_best_model(X_train, y_train):
     param_grid = {'kernel':['rbf'], 'C': Cs, 'gamma' : gammas}
 
     svc = svm.SVC(probability=True, class_weight='balanced')
-    clf = GridSearchCV(svc, param_grid, cv=10, verbose=1, scoring=my_accuracy_scorer)
+    clf = GridSearchCV(svc, param_grid, cv=10, verbose=1, scoring=my_accuracy_scorer, n_jobs=-1)
 
     clf.fit(X_train, y_train)
 
