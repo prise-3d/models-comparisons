@@ -75,6 +75,7 @@ def main():
     p_simulation = args.simulation
     p_learned_zones = args.learned_zones
     p_scene  = args.scene
+    p_thresholds = args.thresholds
 
     # get y lim
     images_indices = [ int(img.split('_')[-1].replace('.png', ''))
