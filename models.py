@@ -36,14 +36,14 @@ def _get_best_model(X_train, y_train):
 
 def _get_best_model_rvm(X_train, y_train):
 
-    #Cs = [0.001, 0.01, 0.1, 1, 10, 100]
+    Cs = [0.001, 0.01, 0.1, 1, 10, 100]
     #Cs = [1, 2, 4, 8, 16, 32]
     gammas = [0.001, 0.01, 0.1, 1, 10, 100]
     #param_grid = {'kernel':['rbf'], 'C': Cs, 'gamma' : gammas}
-    param_grid = {'kernel':['rbf'], 'gamma' : gammas}
+    param_grid = {'kernel':['rbf', 'linear'], 'gamma' : gammas}
 
     rvc = RVC()
-    clf = GridSearchCV(rvc, param_grid, scoring='accuracy', verbose=2)
+    clf = GridSearchCV(rvc, param_grid, scoring='accuracy', cv=5, verbose=2, n_jobs=-1)
     #cv=10, scoring='accuracy', verbose=2)
 
     clf.fit(X_train, y_train)
