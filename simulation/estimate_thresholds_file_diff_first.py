@@ -120,7 +120,7 @@ def main():
                 if img_i == 0:
                     blocks_first_features.append(data)
                 else:
-                    data = data - blocks_first_features[index]
+                    data = list(np.array(data) - np.array(blocks_first_features[index]))
 
                     #data = np.expand_dims(data, axis=0)
                     #print(data.shape)

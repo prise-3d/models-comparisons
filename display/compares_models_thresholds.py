@@ -40,8 +40,8 @@ def display_thresholds_comparisons(scene, output, thresholds, zones_learned, y_l
     colors = ['C0', 'C1', 'C2', 'C3']
     
     fig = plt.figure(figsize=(25, 20))
-    plt.rc('xtick', labelsize=22)    # fontsize of the tick labels
-    plt.rc('ytick', labelsize=22)    # fontsize of the tick labels
+    plt.rc('xtick', labelsize=26)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=26)    # fontsize of the tick labels
     
     # display each thresholds data from file comparisons
     for index, i in enumerate(thresholds):
@@ -49,9 +49,9 @@ def display_thresholds_comparisons(scene, output, thresholds, zones_learned, y_l
         data = thresholds[i]
 
         if human_available and index == 0:
-            plt.plot(data, label=i, color='tab:red', lw=4)
+            plt.plot(data, label=i, color='tab:red', lw=6)
         else:
-            plt.plot(data, label=i, lw=4)
+            plt.plot(data, label=i, lw=5)
     
     plt.xticks(zones_indices, labels=[ str(i + 1) for i in (zones_indices) ])
     
@@ -60,17 +60,17 @@ def display_thresholds_comparisons(scene, output, thresholds, zones_learned, y_l
         for i in cfg.zones_indices:
             if i in zones_learned:
                 
-                plt.plot([i, i], [y_lim[0], y_lim[1]], '--', color='black', alpha=0.5)
+                plt.plot([i, i], [y_lim[0], y_lim[1]], '--', color='black', alpha=0.5, lw=3)
                 plt.gca().get_xticklabels()[i].set_color('black')
             else:
-                plt.plot([i, i], [y_lim[0], y_lim[1]], '-.', color='red', alpha=0.5)
+                plt.plot([i, i], [y_lim[0], y_lim[1]], '-.', color='red', alpha=0.5, lw=3)
                 plt.gca().get_xticklabels()[i].set_color('red')
 
 
-    plt.title('Comparisons of estimated thresholds for ' + scene, fontsize=30)
-    plt.legend(fontsize=26)
-    plt.xlabel('Image zone indices', fontsize=28)
-    plt.ylabel('Number of samples', fontsize=28)
+    # plt.title('Comparisons of estimated thresholds for ' + scene, fontsize=30)
+    plt.legend(fontsize=32)
+    plt.xlabel('Image sub-blocks indices', fontsize=34)
+    plt.ylabel('Number of samples', fontsize=34)
     #plt.tick_params(labelsize=24)
     plt.ylim(y_lim[0], y_lim[1])
 
