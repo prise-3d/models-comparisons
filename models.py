@@ -40,7 +40,7 @@ def _get_best_model_rvm(X_train, y_train):
     #Cs = [1, 2, 4, 8, 16, 32]
     gammas = [0.001, 0.01, 0.1, 1, 10, 100]
     #param_grid = {'kernel':['rbf'], 'C': Cs, 'gamma' : gammas}
-    param_grid = {'kernel':['rbf', 'linear'], 'gamma' : gammas}
+    param_grid = {'kernel':['rbf', 'linear'], 'gamma' : gammas, 'C': Cs}
 
     rvc = RVC()
     clf = GridSearchCV(rvc, param_grid, scoring='accuracy', cv=5, verbose=2, n_jobs=-1)
