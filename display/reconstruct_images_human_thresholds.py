@@ -86,76 +86,33 @@ def main():
     parser = argparse.ArgumentParser(description="Read and display simulation from multiple models")
 
     parser.add_argument('--folder', type=str, help='dataset path with scenes images files', required=True)
-    parser.add_argument('--data', type=str, help='folder with obtained thresholds model data to compare', required=True)
     parser.add_argument('--thresholds', type=str, help='file with specific thresholds (using only scene from this file', required=True)
-    parser.add_argument('--labels', type=str, help='labels list to display in figure', required=True)
-    parser.add_argument('--common', type=int, help='common only with human', default=0, choices=[0, 1])
     parser.add_argument('--output', type=str, help='output folder with figures for each scene', required=True)
 
     args = parser.parse_args()
 
     p_folder = args.folder
-    p_data = args.data
     p_thresholds = args.thresholds
-    p_labels = args.labels.split(',')
-    p_common = bool(args.common)
     p_output = args.output
 
     if not os.path.exists(p_output):
         os.makedirs(p_output)
 
-    # get y lim
-    y_lim = 0, 10000
-
     # 1. retrieve human_thresholds
     human_thresholds = extract_thresholds_from_file(p_thresholds)
-
-    # 3. extract models thresholds
-    models_thresholds = {}
-
-    for i, simu in enumerate(sorted(os.listdir(p_data))):
-        method_label = p_labels[i]
-        simu_path = os.path.join(p_data, simu)
-        models_thresholds[method_label] = extract_thresholds_from_file(simu_path)
-
-    # 4. extract information for each expected scene
-
-    for method_name in p_labels + ['human']:
-        method_output = os.path.join(p_output, method_name)
-
-        if not os.path.exists(method_output):
-            os.makedirs(method_output)
 
     for scene in sorted(os.listdir(p_folder)):
         
         # get all estimated thresholds for this scene
-        estimated_thresholds = {}
         scene_path = os.path.join(p_folder, scene)
         images_path = sorted([ os.path.join(scene_path, img) for img in os.listdir(scene_path) ])
 
-        # get only necessary thresholds
-        if scene in human_thresholds:   
-            current_human_thresholds = human_thresholds[scene]
-            estimated_thresholds['human'] = current_human_thresholds
-
-        for method_name in p_labels:
-            estimated_thresholds[method_name] = models_thresholds[method_name][scene]
-
-        if p_common:
-
-            # do it only if human is also available
-            if 'human' in estimated_thresholds:
-                # create figure with these information
-                for name, thresholds in estimated_thresholds.items():
-                    output_image = os.path.join(p_output, name, scene + '.png')
-                    reconstruct_image(images_path, thresholds, output_image, step=20)
-                    print('Image reconstructed save at {0}'.format(output_image))
-        else:
-            # create figure with these information
-            for name, thresholds in estimated_thresholds.items():
-                output_image = os.path.join(p_output, name, scene + '.png')
-                reconstruct_image(images_path, thresholds, output_image, step=20)
-                print('Image reconstructed save at {0}'.format(output_image))
+        # create image with these information
+        if scene in human_thresholds:
+            thresholds = human_thresholds[scene]
+            output_image = os.path.join(p_output, scene + '.png')
+            reconstruct_image(images_path, thresholds, output_image, step=20)
+            print('Image reconstructed save at {0}'.format(output_image))
 
 
 if __name__== "__main__":

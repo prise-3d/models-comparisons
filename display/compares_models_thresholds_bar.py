@@ -40,39 +40,43 @@ def display_thresholds_comparisons(scene, output, thresholds, zones_learned, y_l
     colors = ['C0', 'C1', 'C2', 'C3']
     
     fig = plt.figure(figsize=(25, 20))
-    plt.rc('xtick', labelsize=26)    # fontsize of the tick labels
-    plt.rc('ytick', labelsize=26)    # fontsize of the tick labels
+    plt.rc('xtick', labelsize=22)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=22)    # fontsize of the tick labels
+    ax = fig.add_axes([0,0,1,1])
     
+    width = 0.35
     # display each thresholds data from file comparisons
     for index, i in enumerate(thresholds):
         
         data = thresholds[i]
 
         if human_available and index == 0:
-            plt.plot(data, label=i, color='tab:red', lw=6)
+            #ax.bar(cfg.zones_indices, data, lw=6, label=i, color='tab:red')
+            ax.bar(cfg.zones_indices + width * index, data, width, label=i, color='tab:red')
         else:
-            plt.plot(data, label=i, lw=5)
+            ax.bar(cfg.zones_indices + width * index, data, width, label=i)
     
-    plt.xticks(zones_indices, labels=[ str(i + 1) for i in (zones_indices) ])
+    ax.set_xticks(zones_indices)
+    ax.set_xticklabels([ str(i + 1) for i in (zones_indices) ])
     
     if zones_learned:
 
         for i in cfg.zones_indices:
             if i in zones_learned:
                 
-                plt.plot([i, i], [y_lim[0], y_lim[1]], '--', color='black', alpha=0.5, lw=3)
+                plt.plot([i, i], [y_lim[0], y_lim[1]], '--', color='black', alpha=0.5)
                 plt.gca().get_xticklabels()[i].set_color('black')
             else:
-                plt.plot([i, i], [y_lim[0], y_lim[1]], '-.', color='red', alpha=0.5, lw=3)
+                plt.plot([i, i], [y_lim[0], y_lim[1]], '-.', color='red', alpha=0.5)
                 plt.gca().get_xticklabels()[i].set_color('red')
 
 
-    # plt.title('Comparisons of estimated thresholds for ' + scene, fontsize=30)
-    plt.legend(fontsize=32)
-    plt.xlabel('Image blocks indices', fontsize=34)
-    plt.ylabel('Number of samples', fontsize=34)
+    ax.set_title('Comparisons of estimated thresholds for ' + scene, fontsize=30)
+    ax.legend(fontsize=26)
+    ax.set_xlabel('Image zone indices', fontsize=28)
+    ax.set_ylabel('Number of samples', fontsize=28)
     #plt.tick_params(labelsize=24)
-    plt.ylim(y_lim[0], y_lim[1])
+    ax.set_ylim(y_lim[0], y_lim[1])
 
     plt.savefig(output, transparent=True)
 
@@ -124,9 +128,7 @@ def main():
     # 3. extract models thresholds
     models_thresholds = {}
 
-    print(sorted(os.listdir(p_data)))
     for i, simu in enumerate(sorted(os.listdir(p_data))):
-        
         method_label = p_labels[i]
         simu_path = os.path.join(p_data, simu)
         models_thresholds[method_label] = extract_thresholds_from_file(simu_path)
