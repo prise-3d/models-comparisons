@@ -84,7 +84,7 @@ def main():
     # create output thresholds directory if necessary
     folder, _ = os.path.split(p_output)
 
-    if len(folder) > 0:
+    if not os.path.exists(folder):
         os.makedirs(folder)
 
     # for each scene we generate random zones choice

@@ -28,7 +28,7 @@ def get_image_features(data_type, block):
     Method which returns the data type expected
     """
     
-    if 'filters_statistics' in data_type:
+    if 'Constantin2015' in data_type:
 
         img_width, img_height = 200, 200
 
@@ -91,7 +91,7 @@ def get_image_features(data_type, block):
         data = np.array(data)
 
     if 'Constantin2016' in data_type:
-
+        
         img_width, img_height = 200, 200
 
         lab_img = transform.get_LAB_L(block)
@@ -136,6 +136,7 @@ def get_image_features(data_type, block):
         # if normalization by L channel is required
         if 'norm' in data_type:
             data /= 100.
+
 
     if 'lab' in data_type:
 
