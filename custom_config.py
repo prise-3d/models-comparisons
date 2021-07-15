@@ -19,7 +19,7 @@ output_results_folder           = os.path.join(output_data_folder, 'results')
 ## correlation_indices_folder      = 'corr_indices'
 
 # variables
-features_choices_labels                 = features_choices_labels + ['filters_statistics', 'Constantin2016', 'Constantin2016_norm']
+features_choices_labels                 = features_choices_labels + ['filters_statistics', 'Constantin2015', 'Constantin2016', 'Constantin2016_norm']
 optimization_filters_result_filename    = 'optimization_comparisons_filters.csv'
 optimization_attributes_result_filename = 'optimization_comparisons_attributes.csv'
 

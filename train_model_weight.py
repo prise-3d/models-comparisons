@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import sys, os, argparse
+import time
 
 # models imports
 from sklearn.model_selection import train_test_split
@@ -21,6 +22,8 @@ sys.path.insert(0, '') # trick to enable import of main folder module
 
 import custom_config as cfg
 import models as mdl
+
+filetime_name = 'output_time.info'
 
 # variables and parameters
 saved_models_folder = cfg.saved_models_folder
@@ -108,7 +111,12 @@ def main():
     print("-------------------------------------------")
     print("Train dataset size: ", final_df_train_size)
 
+    start_time = time.time()
     model = mdl.get_trained_model(p_choice, x_dataset_train, y_dataset_train)
+
+    trained_time = (time.time() - start_time)
+    with open(filetime_name, 'a') as f:
+        f.write(f'{p_output};{trained_time}\n')
 
     #######################
     # 3. Fit model : use of cross validation to fit model

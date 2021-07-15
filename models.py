@@ -7,17 +7,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.feature_selection import RFECV
 import sklearn.svm as svm
 from skrvm import RVC
-from sklearn.metrics.scorer import accuracy_scorer
 
 
-n_predict = 0
-
-def my_accuracy_scorer(*args):
-    global n_predict
-    score = accuracy_scorer(*args)
-    print('{0} - Score is {1}'.format(n_predict, score))
-    n_predict += 1
-    return score
 
 def _get_best_model(X_train, y_train):
 
